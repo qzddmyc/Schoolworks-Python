@@ -9,3 +9,5 @@ print(s.count('o'))
 print(s.replace('.', '-'))
 print(s.upper())
 print(s.split('.'))
+
+print(s)
