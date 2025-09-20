@@ -3,4 +3,4 @@
 
 ---
 
-> MasmForWindows2015 文件夹中为 masm for windows 安装包
+MasmForWindows2015 文件夹中为 masm for windows 安装包
