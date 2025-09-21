@@ -14,4 +14,3 @@ elif x < 0 and y < 0:
     print('第三象限')
 else:
     print('第四象限')
-print(x, y)
