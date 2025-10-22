@@ -20,9 +20,9 @@ class Contact:
 
 contact = Contact()
 while True:
-    print('-' * 30)
-    print("\n\t1. 新增联系人\n\t2. 查询联系人\n\t3. 删除联系人\n\t4. 退出")
-    ipt = input("\nYour choice：")
+    print('-' * 20)
+    print("  1. 新增联系人\n  2. 查询联系人\n  3. 删除联系人\n  4. 退出")
+    ipt = input("Your choice：")
     match ipt:
         case '1':
             name = input("请输入联系人姓名：")
