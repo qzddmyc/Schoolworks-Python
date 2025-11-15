@@ -15,16 +15,13 @@ def load_and_split_chapters(file_path):
         content = f.read()
     content = re.sub(r'<!\[CDATA\[|\]\]>', '', content)
     content = re.sub(r'\s+', ' ', content)
-    chapter_pattern = re.compile(
-        r'(第[一二三四五六七八九十百]+回.*?)(?=第[一二三四五六七八九十百]+回|$)', re.DOTALL)
+    chapter_pattern = re.compile(r'(第[一二三四五六七八九十百]+回.*?)(?=第[一二三四五六七八九十百]+回|$)', re.DOTALL)
     chapters = chapter_pattern.findall(content)
     chapter_list = []
     for chap in chapters:
         title_match = re.match(r'第[一二三四五六七八九十百]+回(.*?)[。！？；]?\s', chap)
-        title = title_match.group(
-            1).strip() if title_match else f"第{len(chapter_list)+1}回"
-        content = chap[title_match.end():].strip(
-        ) if title_match else chap.strip()
+        title = title_match.group(1).strip() if title_match else f"第{len(chapter_list)+1}回"
+        content = chap[title_match.end():].strip() if title_match else chap.strip()
         if content and len(content) > 50:
             chapter_list.append({'title': title, 'content': content})
     return chapter_list
@@ -39,7 +36,7 @@ def load_stopwords():
     }
 
 
-def 分词_and_count(chapter_list, stopwords):
+def split_word_and_count(chapter_list, stopwords):
     all_words = []
     for chap in chapter_list:
         content = chap['content']
@@ -53,15 +50,9 @@ def 分词_and_count(chapter_list, stopwords):
         all_words.extend(filtered_words)
 
     word_freq = Counter(all_words)
-    meaningful_freq = {
-        word: freq
-        for word, freq in word_freq.items() if freq >= 2
-    }
+    meaningful_freq = {word: freq for word, freq in word_freq.items() if freq >= 2}
     if len(meaningful_freq) < 30:
-        meaningful_freq = {
-            word: freq
-            for word, freq in word_freq.items() if freq >= 1
-        }
+        meaningful_freq = {word: freq for word, freq in word_freq.items() if freq >= 1}
 
     print(f"筛选出有效高频词 {len(meaningful_freq)} 个")
     print("高频词TOP20：", dict(list(meaningful_freq.items())[:20]))
@@ -71,10 +62,8 @@ def 分词_and_count(chapter_list, stopwords):
 # -------------------------- 3. 词云图生成 --------------------------
 def get_windows_default_font():
     font_paths = [
-        r'C:\Windows\Fonts\msyh.ttc', r'C:\Windows\Fonts\simsun.ttc',
-        r'C:\Windows\Fonts\simhei.ttf', r'C:\Windows\Fonts\simfang.ttf',
-        r'C:\Windows\Fonts\simkai.ttf',
-        r'C:\Windows\Fonts\Microsoft YaHei UI.ttc',
+        r'C:\Windows\Fonts\msyh.ttc', r'C:\Windows\Fonts\simsun.ttc', r'C:\Windows\Fonts\simhei.ttf',
+        r'C:\Windows\Fonts\simfang.ttf', r'C:\Windows\Fonts\simkai.ttf', r'C:\Windows\Fonts\Microsoft YaHei UI.ttc',
         r"/System/Library/Fonts/STHeiti Medium.ttc"
     ]
     for font_path in font_paths:
@@ -129,7 +118,7 @@ def generate_wordcloud(word_freq, output_path='shuihu_wordcloud.png'):
         print(f"词云生成异常：{str(e)}")
         try:
             wc.to_file(output_path)
-            print(f"词云图已保存至 {output_path}（基础版本）")
+            print(f"词云图已保存至 {output_path}")
         except:
             print("词云生成失败，无法保存")
 
@@ -195,77 +184,24 @@ def plot_emotion_trend(emotion_results, output_path='emotion_trend.png'):
 # -------------------------- 5. 人物关系图 --------------------------
 def build_person_alias():
     return {
-        '鲁达': '鲁智深',
-        '花和尚': '鲁智深',
-        '林冲': '林冲',
-        '豹子头': '林冲',
-        '林教头': '林冲',
-        '晁盖': '晁盖',
-        '晁保正': '晁盖',
-        '托塔天王': '晁盖',
-        '吴用': '吴用',
-        '智多星': '吴用',
-        '吴学究': '吴用',
-        '公孙胜': '公孙胜',
-        '入云龙': '公孙胜',
-        '刘唐': '刘唐',
-        '赤发鬼': '刘唐',
-        '阮小二': '阮小二',
-        '立地太岁': '阮小二',
-        '阮小五': '阮小五',
-        '短命二郎': '阮小五',
-        '阮小七': '阮小七',
-        '活阎罗': '阮小七',
-        '杨志': '杨志',
-        '青面兽': '杨志',
-        '杨制使': '杨志',
-        '宋江': '宋江',
-        '及时雨': '宋江',
-        '宋押司': '宋江',
-        '黑宋江': '宋江',
-        '孝义黑三郎': '宋江',
-        '武松': '武松',
-        '武二郎': '武松',
-        '行者': '武松',
-        '李逵': '李逵',
-        '黑旋风': '李逵',
-        '铁牛': '李逵',
-        '卢俊义': '卢俊义',
-        '玉麒麟': '卢俊义',
-        '燕青': '燕青',
-        '浪子': '燕青',
-        '关胜': '关胜',
-        '大刀': '关胜',
-        '秦明': '秦明',
-        '霹雳火': '秦明',
-        '呼延灼': '呼延灼',
-        '双鞭': '呼延灼',
-        '花荣': '花荣',
-        '小李广': '花荣',
-        '柴进': '柴进',
-        '小旋风': '柴进',
-        '朱仝': '朱仝',
-        '美髯公': '朱仝',
-        '雷横': '雷横',
-        '插翅虎': '雷横',
-        '白胜': '白胜',
-        '白日鼠': '白胜',
-        '王伦': '王伦',
-        '白衣秀士': '王伦',
-        '郑屠': '郑屠',
-        '镇关西': '郑屠',
-        '高衙内': '高衙内',
-        '高俅': '高俅',
-        '高太尉': '高俅',
-        '梁中书': '梁中书'
+        '鲁达': '鲁智深', '花和尚': '鲁智深', '林冲': '林冲', '豹子头': '林冲', '林教头': '林冲',
+        '晁盖': '晁盖', '晁保正': '晁盖', '托塔天王': '晁盖', '吴用': '吴用', '智多星': '吴用',
+        '吴学究': '吴用', '公孙胜': '公孙胜', '入云龙': '公孙胜', '刘唐': '刘唐', '赤发鬼': '刘唐',
+        '阮小二': '阮小二', '立地太岁': '阮小二', '阮小五': '阮小五', '短命二郎': '阮小五', '阮小七': '阮小七',
+        '活阎罗': '阮小七', '杨志': '杨志', '青面兽': '杨志', '杨制使': '杨志', '宋江': '宋江', '及时雨': '宋江',
+        '宋押司': '宋江', '黑宋江': '宋江', '孝义黑三郎': '宋江', '武松': '武松', '武二郎': '武松',
+        '行者': '武松', '李逵': '李逵', '黑旋风': '李逵', '铁牛': '李逵', '卢俊义': '卢俊义',
+        '玉麒麟': '卢俊义', '燕青': '燕青', '浪子': '燕青', '关胜': '关胜', '大刀': '关胜', '秦明': '秦明',
+        '霹雳火': '秦明', '呼延灼': '呼延灼', '双鞭': '呼延灼', '花荣': '花荣', '小李广': '花荣',
+        '柴进': '柴进', '小旋风': '柴进', '朱仝': '朱仝', '美髯公': '朱仝', '雷横': '雷横','插翅虎': '雷横',
+        '白胜': '白胜', '白日鼠': '白胜', '王伦': '王伦', '白衣秀士': '王伦', '郑屠': '郑屠', '镇关西': '郑屠',
+        '高衙内': '高衙内', '高俅': '高俅', '高太尉': '高俅', '梁中书': '梁中书'
     }
 
 
 def extract_persons_from_text(text, person_alias):
     persons = set()
-    sorted_aliases = sorted(person_alias.items(),
-                            key=lambda x: len(x[0]),
-                            reverse=True)
+    sorted_aliases = sorted(person_alias.items(), key=lambda x: len(x[0]), reverse=True)
     for alias, real_name in sorted_aliases:
         if alias in text:
             persons.add(real_name)
@@ -278,9 +214,7 @@ def build_person_cooccurrence(chapter_list, person_alias):
 
     for chap in chapter_list:
         content = chap['content']
-        paragraphs = [
-            p.strip() for p in content.split('。') if p.strip() and len(p) > 100
-        ]
+        paragraphs = [p.strip() for p in content.split('。') if p.strip() and len(p) > 100]
         for para in paragraphs:
             persons = extract_persons_from_text(para, person_alias)
             if len(persons) >= 2:
@@ -292,9 +226,7 @@ def build_person_cooccurrence(chapter_list, person_alias):
     return cooccur, person_count
 
 
-def plot_person_relation(cooccur,
-                         person_count,
-                         output_path='person_relation.png'):
+def plot_person_relation(cooccur, person_count, output_path='person_relation.png'):
     plt.rcParams['font.sans-serif'] = ['Microsoft YaHei', 'SimHei', 'SimSun']
     plt.rcParams['axes.unicode_minus'] = False
 
@@ -331,8 +263,7 @@ def plot_person_relation(cooccur,
 
     node_sizes = [G.nodes[p]['size'] for p in G.nodes]
     nx.draw_networkx_nodes(
-        G,
-        pos,
+        G, pos,
         node_size=node_sizes,
         node_color='#ecad36',
         alpha=0.9,
@@ -343,16 +274,14 @@ def plot_person_relation(cooccur,
     edges = G.edges(data=True)
     edge_weights = [d['weight'] for (u, v, d) in edges]
     edge_widths = [min(w * 1.2, 6) for w in edge_weights]
-    nx.draw_networkx_edges(G,
-                           pos,
+    nx.draw_networkx_edges(G, pos,
                            width=edge_widths,
                            alpha=0.6,
                            edge_color='#7f7f7f',
                            style='solid')
 
     nx.draw_networkx_labels(
-        G,
-        pos,
+        G, pos,
         font_size=18,
         font_weight='bold',
         font_color='black')
@@ -362,8 +291,7 @@ def plot_person_relation(cooccur,
         for (u, v, d) in edges if d['weight'] >= 5
     }
     nx.draw_networkx_edge_labels(
-        G,
-        pos,
+        G, pos,
         edge_labels=edge_labels,
         font_size=10,
         label_pos=0.3,
@@ -390,7 +318,7 @@ def main(file_path='水浒传.txt'):
     stopwords = load_stopwords()
 
     print("正在分词并统计词频...")
-    meaningful_freq, all_words = 分词_and_count(chapter_list, stopwords)
+    meaningful_freq, all_words = split_word_and_count(chapter_list, stopwords)
 
     print("正在生成词云图...")
     generate_wordcloud(meaningful_freq)
@@ -409,12 +337,7 @@ def main(file_path='水浒传.txt'):
     print("正在构建人物关系...")
     person_alias = build_person_alias()
     cooccur, person_count = build_person_cooccurrence(chapter_list, person_alias)
-    print(
-        "核心人物出现次数TOP10：",
-        dict(
-            sorted(person_count.items(), key=lambda x: x[1], reverse=True)[:10]
-        )
-    )
+    print("核心人物出现次数TOP10：", dict(sorted(person_count.items(), key=lambda x: x[1], reverse=True)[:10]))
     print("正在绘制人物关系图...")
     plot_person_relation(cooccur, person_count)
 
