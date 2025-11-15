@@ -1,0 +1,6 @@
+jieba
+numpy
+networkx
+snownlp
+matplotlib
+wordcloud
