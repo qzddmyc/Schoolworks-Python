@@ -202,15 +202,12 @@ def build_person_cooccurrence(chapter_list, person_alias):
 def plot_person_relation(cooccur, person_count, output_path='person_relation.png'):
     plt.rcParams['font.sans-serif'] = ['Microsoft YaHei', 'SimHei', 'SimSun']
     plt.rcParams['axes.unicode_minus'] = False
-
     core_persons = {p for p, cnt in person_count.items() if cnt >= 10}
-
     core_cooccur = {
         (p1, p2): cnt
         for (p1, p2), cnt in cooccur.items()
         if cnt >= 4 and p1 in core_persons and p2 in core_persons
     }
-
     if len(core_persons) < 5:
         core_persons = {p for p, cnt in person_count.items() if cnt >= 6}
         core_cooccur = {
@@ -220,23 +217,18 @@ def plot_person_relation(cooccur, person_count, output_path='person_relation.png
         }
     
     G = nx.Graph()
-
     for p in core_persons:
         size = min(person_count[p] * 100, 10000)
         G.add_node(p, size=size)
-
     for (p1, p2), weight in core_cooccur.items():
         G.add_edge(p1, p2, weight=weight)
-
     plt.figure(figsize=(20, 14))
 
     try:
         pos = nx.kamada_kawai_layout(G, weight='weight', scale=8)
     except:
         pos = nx.spring_layout(G, k=6, iterations=200, seed=42, scale=6)
-
     node_sizes = [G.nodes[p]['size'] for p in G.nodes]
-
     nx.draw_networkx_nodes(
         G, pos, node_size=node_sizes, node_color='#ecad36', alpha=0.9,
         edgecolors='#1f77b4', linewidths=2.0
@@ -245,12 +237,9 @@ def plot_person_relation(cooccur, person_count, output_path='person_relation.png
     edges = G.edges(data=True)
     edge_weights = [d['weight'] for (u, v, d) in edges]
     edge_widths = [min(w * 1.2, 6) for w in edge_weights]
-
     nx.draw_networkx_edges(G, pos, width=edge_widths, alpha=0.6, edge_color='#7f7f7f', style='solid')
     nx.draw_networkx_labels(G, pos, font_size=18, font_weight='bold', font_color='black')
-
     edge_labels = {(u, v): d['weight'] for (u, v, d) in edges if d['weight'] >= 5}
-
     nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=10, label_pos=0.3,
         bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.9)
     )
