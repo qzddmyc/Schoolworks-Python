@@ -8,7 +8,7 @@ d2 = p.deriv(2)
 print(f"x = 2, fx = {p(2)}", end='\n\n')
 print(f"x = 5, fx = {p(5)}", end='\n\n')
 print(f"f'x:\n{d1}", end='\n\n')
-print(f"f''x:\n{d2}", end='\n\n')
+print(f'f"x:\n{d2}', end='\n\n')
 
 x = np.linspace(-10, 10, 100)
 plt.figure(figsize=(8, 8))
