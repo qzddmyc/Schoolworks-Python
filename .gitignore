@@ -4,3 +4,4 @@
 __pycache__/
 !LabFiles/**/*
 /C_天上的星星参北斗/output/
+/D_科学计算/*.png
